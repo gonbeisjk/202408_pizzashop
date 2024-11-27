@@ -1,19 +1,42 @@
 <?php
+// エラーメッセージ用の配列
+$errors = [
+  'pizza-name' => '',
+  'chef-name' => '',
+  'toppings' => '',
+];
+
+// 入力値の再反映用の変数
+$pizzaName = '';
+$chefName = '';
+$toppings = [];
+
 // 送信チェック
 if (isset($_POST['submit'])) {
   print_r($_POST);
 
+  print_r($_POST['toppings']);
+
   if (empty($_POST['pizza-name'])) {
-    echo 'ピザの名前は必須入力です';
+    $errors['pizza-name'] = 'ピザの名前は必須入力です';
   } else {
-    echo htmlspecialchars($_POST['pizza-name']);
+    if (!preg_match('/^([^\x01-\x7E]|[\da-zA-Z ])+$/', $_POST['pizza-name'])) {
+      $errors['pizza-name'] =  '日本語、英数字のみ有効です。記号等は使用できません';
+    }
+    $pizzaName = $_POST['pizza-name'];
   }
 
   if (empty($_POST['chef-name'])) {
-    echo 'シェフの名前は必須入力です';
+    $errors['chef-name'] =  'シェフの名前は必須入力です';
   } else {
-    echo htmlspecialchars($_POST['chef-name']);
+    if (!preg_match('/^([^\x01-\x7E]|[\da-zA-Z ])+$/', $_POST['chef-name'])) {
+      $errors['chef-name'] =  '日本語、英数字のみ有効です。記号等は使用できません';
+    }
+    $chefName = $_POST['chef-name'];
   }
+
+  // TODO: チェックされなかった場合（データが存在しない場合）も考慮する
+  $toppings = $_POST['toppings'];
 }
 ?>
 <?php include 'header.php'; ?>
@@ -33,18 +56,26 @@ echo htmlspecialchars('<script>alert("アラート")</script>');
       <form action="add.php" method="post">
         <div class="mb-3">
           <label for="pizza-name">ピザの名前</label>
-          <input type="text" class="form-control" name="pizza-name" id="pizza-name" placeholder="クワトロフォルマッジ">
+          <input type="text" class="form-control" name="pizza-name" id="pizza-name" placeholder="クワトロフォルマッジ" value="<?= htmlspecialchars($pizzaName); ?>">
           <p class="form-text">ピザの名前を入力してください</p>
+          <p class="text-danger"><?= $errors['pizza-name']; ?></p>
         </div>
         <div class="mb-3">
           <label for="chef-name">シェフの名前</label>
-          <input type="text" class="form-control" name="chef-name" id="chef-name" placeholder="ピザ親父">
+          <input type="text" class="form-control" name="chef-name" id="chef-name" placeholder="ピザ親父" value="<?= htmlspecialchars($chefName); ?>">
           <p class="form-text">ピザを考案したシェフの名前を入力してください</p>
+          <p class="text-danger"><?= $errors['chef-name']; ?></p>
         </div>
         <div class="mb-3">
           <p>トッピング</p>
           <div class="form-check form-check-inline">
-            <input type="checkbox" class="form-check-input" name="toppings[]" id="topping-pepper" value="ピーマン">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              name="toppings[]"
+              id="topping-pepper"
+              value="ピーマン"
+              <?= in_array('ピーマン', $toppings) ? 'checked' : ''; ?>>
             <label for="topping-pepper" class="form-check-label">ピーマン</label>
           </div>
           <div class="form-check form-check-inline">
