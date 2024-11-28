@@ -1,4 +1,6 @@
 <?php
+require 'dbconnect.php';
+
 // エラーメッセージ用の配列
 $errors = [
   'pizza-name' => '',
@@ -37,13 +39,28 @@ if (isset($_POST['submit'])) {
   // チェックされなかった場合（データが存在しない場合 == null）も考慮する
   // $toppings = isset($_POST['toppings']) ? $_POST['toppings'] : [];
   $toppings = $_POST['toppings'] ?? [];
+  if ($toppings) {
+    $toppings_text = implode(',', $toppings);
+  }
 
   // 最終エラーチェック
   if (!array_filter($errors)) {
     // echo 'エラーはありません';
-    // リダイレクト(別ページへ遷移させる)
-    header('location: index.php');
-    exit; // die; 処理をここでストップ
+
+    // データベースへの登録
+    $stmt = $db->prepare('INSERT INTO pizzas (pizza_name, chef_name, toppings) VALUES (?,?,?)');
+    $stmt->bindValue(1, $_POST['pizza-name']);
+    $stmt->bindValue(2, $_POST['chef-name']);
+    if ($toppings) {
+      $stmt->bindValue(3, $toppings_text);
+    }
+    $result = $stmt->execute();
+
+    if ($result) {
+      // リダイレクト(別ページへ遷移させる)
+      header('location: index.php');
+      exit; // die; 処理をここでストップ
+    }
   }
 }
 ?>
