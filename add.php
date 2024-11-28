@@ -13,9 +13,8 @@ $toppings = [];
 
 // 送信チェック
 if (isset($_POST['submit'])) {
-  print_r($_POST);
-
-  print_r($_POST['toppings']);
+  // print_r($_POST);
+  // print_r($_POST['toppings']);
 
   if (empty($_POST['pizza-name'])) {
     $errors['pizza-name'] = 'ピザの名前は必須入力です';
@@ -40,9 +39,7 @@ if (isset($_POST['submit'])) {
   $toppings = $_POST['toppings'] ?? [];
 
   // 最終エラーチェック
-  if (array_filter($errors)) {
-    echo 'エラーがあります';
-  } else {
+  if (!array_filter($errors)) {
     // echo 'エラーはありません';
     // リダイレクト(別ページへ遷移させる)
     header('location: index.php');
