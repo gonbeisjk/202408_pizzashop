@@ -35,8 +35,19 @@ if (isset($_POST['submit'])) {
     $chefName = $_POST['chef-name'];
   }
 
-  // TODO: チェックされなかった場合（データが存在しない場合）も考慮する
-  $toppings = $_POST['toppings'];
+  // チェックされなかった場合（データが存在しない場合 == null）も考慮する
+  // $toppings = isset($_POST['toppings']) ? $_POST['toppings'] : [];
+  $toppings = $_POST['toppings'] ?? [];
+
+  // 最終エラーチェック
+  if (array_filter($errors)) {
+    echo 'エラーがあります';
+  } else {
+    // echo 'エラーはありません';
+    // リダイレクト(別ページへ遷移させる)
+    header('location: index.php');
+    exit; // die; 処理をここでストップ
+  }
 }
 ?>
 <?php include 'header.php'; ?>
@@ -79,15 +90,30 @@ echo htmlspecialchars('<script>alert("アラート")</script>');
             <label for="topping-pepper" class="form-check-label">ピーマン</label>
           </div>
           <div class="form-check form-check-inline">
-            <input type="checkbox" class="form-check-input" name="toppings[]" id="topping-bacon" value="ベーコン">
+            <input type="checkbox"
+              class="form-check-input"
+              name="toppings[]"
+              id="topping-bacon"
+              value="ベーコン"
+              <?= in_array('ベーコン', $toppings) ? 'checked' : ''; ?>>
             <label for="topping-bacon" class="form-check-label">ベーコン</label>
           </div>
           <div class="form-check form-check-inline">
-            <input type="checkbox" class="form-check-input" name="toppings[]" id="topping-shrimp" value="えび">
+            <input type="checkbox"
+              class="form-check-input"
+              name="toppings[]"
+              id="topping-shrimp"
+              value="えび"
+              <?= in_array('えび', $toppings) ? 'checked' : ''; ?>>
             <label for="topping-shrimp" class="form-check-label">えび</label>
           </div>
           <div class="form-check form-check-inline">
-            <input type="checkbox" class="form-check-input" name="toppings[]" id="topping-mushroom" value="マッシュルーム">
+            <input type="checkbox"
+              class="form-check-input"
+              name="toppings[]"
+              id="topping-mushroom"
+              value="マッシュルーム"
+              <?= in_array('マッシュルーム', $toppings) ? 'checked' : ''; ?>>
             <label for="topping-mushroom" class="form-check-label">マッシュルーム</label>
           </div>
         </div>
