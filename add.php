@@ -41,6 +41,8 @@ if (isset($_POST['submit'])) {
   $toppings = $_POST['toppings'] ?? [];
   if ($toppings) {
     $toppings_text = implode(',', $toppings);
+  } else {
+    $toppings_text = '';
   }
 
   // 最終エラーチェック
@@ -51,9 +53,7 @@ if (isset($_POST['submit'])) {
     $stmt = $db->prepare('INSERT INTO pizzas (pizza_name, chef_name, toppings) VALUES (?,?,?)');
     $stmt->bindValue(1, $_POST['pizza-name']);
     $stmt->bindValue(2, $_POST['chef-name']);
-    if ($toppings) {
-      $stmt->bindValue(3, $toppings_text);
-    }
+    $stmt->bindValue(3, $toppings_text);
     $result = $stmt->execute();
 
     if ($result) {
