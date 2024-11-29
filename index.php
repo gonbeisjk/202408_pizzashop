@@ -25,7 +25,7 @@ $pizzas = $result->fetchAll(); //全データの多次元+連想配列
             <p class="card-text">by <?= $pizza['chef_name']; ?></p>
           </div>
           <div class="card-footer text-end">
-            <a href="#" class="btn btn-primary">詳細</a>
+            <a href="detail.php?id=<?= $pizza['id']; ?>" class="btn btn-primary">詳細</a>
           </div>
         </div>
       </div>
