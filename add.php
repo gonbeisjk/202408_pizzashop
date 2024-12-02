@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require 'dbconnect.php';
 
 // エラーメッセージ用の配列
@@ -57,6 +59,8 @@ if (isset($_POST['submit'])) {
     $result = $stmt->execute();
 
     if ($result) {
+      $_SESSION['success'] = 'ピザの登録が完了しました';
+
       // リダイレクト(別ページへ遷移させる)
       header('location: index.php');
       exit; // die; 処理をここでストップ

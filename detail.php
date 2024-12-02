@@ -1,7 +1,29 @@
 <?php
+session_start();
+
 require 'dbconnect.php';
 
+// 削除
+if (
+  isset($_POST['delete']) &&
+  $_POST['delete'] === 'delete'
+) {
+  $stmt = $db->prepare('DELETE FROM pizzas WHERE id = ?');
+  $stmt->bindValue(1, $_POST['delete-id']);
+  $result = $stmt->execute();
+
+  // var_dump($result);
+  // var_dump($stmt->rowCount());
+  if ($result && $stmt->rowCount()) {
+    $_SESSION['success'] = 'ピザを削除しました';
+    header('location: index.php');
+    exit;
+  }
+}
+
+// 表示
 if (isset($_GET['id'])) {
+
   $stmt = $db->prepare('SELECT * FROM pizzas WHERE id = ?');
   $stmt->bindValue(1, $_GET['id']);
   $result = $stmt->execute();
@@ -42,6 +64,13 @@ if (isset($_GET['id'])) {
             </ul>
           <?php endif; ?>
           <p class="card-text text-muted">登録日: <?= htmlspecialchars($pizza['created_at']); ?></p>
+        </div>
+        <div class="card-footer">
+          <form action="detail.php" method="post" id="delete-form">
+            <input type="hidden" name="delete-id" value="<?= htmlspecialchars($pizza['id']) ?>">
+            <input type="hidden" name="delete" value="delete">
+            <button class="btn btn-danger">削除</button>
+          </form>
         </div>
       </div>
     </div>

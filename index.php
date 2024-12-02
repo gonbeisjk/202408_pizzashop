@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require 'dbconnect.php';
 
 // データの読み出し
@@ -12,6 +14,14 @@ $pizzas = $result->fetchAll(); //全データの多次元+連想配列
 <?php include 'header.php'; ?>
 
 <div class="container">
+  <?php if (isset($_SESSION['success'])): ?>
+    <div class="alert alert-success alert-dismissible fade show">
+      <?= htmlspecialchars($_SESSION['success']); ?>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <?php unset($_SESSION['success']); ?>
+    </div>
+  <?php endif; ?>
+
   <h1 class="text-center display-4 my-5">
     Our Special Pizzas
   </h1>
